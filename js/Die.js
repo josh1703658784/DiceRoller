@@ -2,7 +2,7 @@
 Globals.Die = _.partial(function Die(Util, s){
     'use strict'
     
-    const { _deepFreeze: _deepFreeze, _deepSeal: _deepSeal } = Util;
+    const { _deepFreeze, _deepSeal } = Util;
         
     function roll(max) {
         const min = 1;
@@ -14,4 +14,6 @@ Globals.Die = _.partial(function Die(Util, s){
         name: 'D'+s,
         roll: _.partial(roll, s)
     });
+    
+    
 }, Globals.Util);

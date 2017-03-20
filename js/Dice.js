@@ -1,10 +1,18 @@
 
-Globals.Dice = (function Dice(Die, Util){
+Globals.Dice = (function Dice(Die, Util, DomWorker){
     'use strict'
     
-    const { _deepFreeze: _deepFreeze, _deepSeal: _deepSeal } = Util;
-    const diceSides = [4, 6, 8, 10, 12, 20];
-    const diceTypes = generateDiceTypes(diceSides);
+    console.debug(DomWorker)
+    
+    const { _deepFreeze, _deepSeal, _$ } = Util;
+    const { populateDiceSelector, getDiceSelectorValue, rollButtonClick, displayRollResult } = DomWorker;
+    
+    const diceSides = _deepFreeze([4, 6, 8, 10, 12, 20]);
+    const diceTypes = _deepFreeze(generateDiceTypes(diceSides));
+    populateDiceSelector(diceTypes);
+    rollButtonClick(rollDiceListener)
+    
+    
 
     function generateDiceTypes(diceSides){
         return _deepFreeze(_.map(diceSides, Die));
@@ -15,19 +23,32 @@ Globals.Dice = (function Dice(Die, Util){
     };
     
     function getDieBySides(s){
-        return diceTypes.find(t => s === t.sides);
+        return _.findWhere(diceTypes, {sides: s});
     };
     
     function roll(s){
         return getDieBySides(s).roll();
     };
-    
+
+    function rollDiceListener(){
+        const numberSides = getDiceSelectorValue();
+        const result = roll(numberSides);
+        displayRollResult(result);        
+    };
+
+
+
     return (function exportPublicFunctions(){
-        return {
+        return _deepFreeze({
                 getAllDice: getDiceOptions,
                 get: getDieBySides,
                 roll: roll
-        };
+        });
     }());
 
-}(Globals.Die, Globals.Util));
+
+
+}(Globals.Die, Globals.Util, Globals.DomWorker));
+
+
+
